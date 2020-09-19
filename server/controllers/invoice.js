@@ -1,10 +1,24 @@
 const { v4: uuidv4 } = require("uuid");
 const Invoice = require("../models/invoice");
 
-// TODO validate data
-// TODO sanizitation
-//
-const getInvoices = () => {};
+const getInvoices = async (req, res) => {
+  try {
+    // TODO validate data
+    // TODO sanizitation
+    //
+    const invoices = await Invoice.find();
+    return res.status(200).json({
+      data: invoices,
+      success: true,
+    });
+  } catch (e) {
+    console.log("e", e);
+    return res.status(500).json({
+      success: false,
+      error: e.message,
+    });
+  }
+};
 
 const addInvoice = async (req, res) => {
   try {
@@ -21,7 +35,8 @@ const addInvoice = async (req, res) => {
     } = req;
 
     const newInvoice = await Invoice({
-      invoice_date,
+      id: uuidv4(),
+      invoice_number,
       total,
       currency,
       invoice_date,
@@ -46,4 +61,5 @@ const addInvoice = async (req, res) => {
 
 module.exports = {
   addInvoice,
+  getInvoices,
 };
