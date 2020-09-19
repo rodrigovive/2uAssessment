@@ -23,6 +23,7 @@ const TableHead = ({ handleClickSelectAll, numSelected, rowCount, cells }) => {
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
+            color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={handleClickSelectAll}

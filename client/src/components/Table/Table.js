@@ -43,14 +43,9 @@ const Table = ({ headCells = [], rows = [], handleClickIcon }) => {
       [id]: !prev[id],
     }));
   };
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -105,18 +100,13 @@ const Table = ({ headCells = [], rows = [], handleClickIcon }) => {
                     invoiceDate={row.invoiceDate}
                     invoiceNumber={row.invoiceNumber}
                     invoiceTotal={row.invoiceTotal}
-                    venderName={row.vendorName}
+                    vendorName={row.vendorName}
                     vendorAddress={row.vendorAddress}
                     dueDate={row.dueDate}
                     handleClickIcon={handleClickIconRow(row.id)}
                     key={row.id}
                   />
                 ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
             </TableBody>
           </TableMaterial>
         </TableContainer>

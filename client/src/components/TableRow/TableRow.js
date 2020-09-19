@@ -30,8 +30,8 @@ const TableRow = ({
   invoiceDate,
   invoiceNumber,
   invoiceTotal,
-  venderName,
-  venderAddress,
+  vendorName,
+  vendorAddress,
   dueDate,
   handleClickIcon,
 }) => {
@@ -61,8 +61,8 @@ const TableRow = ({
       <TableCell component="th" id={labelId} scope="row">
         {invoiceNumber}
       </TableCell>
-      <TableCell>{venderName}</TableCell>
-      <TableCell>{venderAddress}</TableCell>
+      <TableCell>{vendorName}</TableCell>
+      <TableCell>{vendorAddress}</TableCell>
       <TableCell>{invoiceTotal}</TableCell>
       <TableCell>{invoiceDate}</TableCell>
       <TableCell>{dueDate}</TableCell>

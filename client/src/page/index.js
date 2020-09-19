@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "@material-ui/core";
 import Table from "../components/Table";
 import DialogConfirm from "../components/DialogConfirm";
+import { useSelector, useDispatch } from "react-redux";
+import { getInvoices } from "../actions/invoice";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein, id: name };
@@ -23,9 +25,33 @@ const rows = [
   createData("Oreo", 437, 18.0, 63, 4.0),
 ];
 
+const getRows = (data) =>
+  data.map((item) => ({
+    id: item.id,
+    invoiceDate: item.invoice_date,
+    invoiceNumber: item.invoice_number,
+    invoiceTotal: item.invoice_total,
+    vendorName: item.vendor_name,
+    vendorAddress: item.remittance_address,
+    dueDate: item.due_date,
+  }));
+
 const Home = () => {
-  console.log("test");
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getInvoices());
+  }, [dispatch]);
+
+  const invoices = useSelector((state) => {
+    return state.invoice.data;
+  });
+  const isLoading = useSelector((state) => {
+    return state.invoice.isLoading;
+  });
+  console.log("invoices", invoices);
+  console.log("isLoading", isLoading);
+
   const handleConfirmDialog = () => {
     setIsOpenDialog(true);
   };
@@ -59,7 +85,7 @@ const Home = () => {
             label: "Due Date",
           },
         ]}
-        rows={rows}
+        rows={getRows(invoices)}
       />
       <DialogConfirm
         title="Approve invoices?"
