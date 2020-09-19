@@ -1,7 +1,7 @@
 import {
   FETCH_INVOICES,
   LIST_INVOICES,
-  CREATE_INVOICE_ERROR,
+  UPDATE_INVOICE,
   CREATE_INVOICE,
 } from "./types";
 import { API_URL } from "../config/env";
@@ -13,9 +13,38 @@ export function listInvoicesSuccess(payload) {
   };
 }
 
+export function updateInvoice(invoiceIds = []) {
+  return async function (dispatch) {
+    try {
+      dispatch({
+        type: FETCH_INVOICES,
+      });
+      await Promise.all(
+        invoiceIds.map(async (id) => {
+          const response = await (
+            await fetch(`${API_URL}/api/invoice/${id}`, {
+              method: "PATCH",
+              body: JSON.stringify({
+                status: "Approved",
+              }),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+          ).json();
+          console.log("response", response);
+        })
+      );
+    } catch (error) {
+      console.log("error", error.message);
+    }
+  };
+}
+
 export function getInvoices() {
   return async function (dispatch) {
     try {
+      // TODO actions error handler
       dispatch({
         type: FETCH_INVOICES,
       });
@@ -32,6 +61,13 @@ export function getInvoices() {
 export function createInvoiceSuccess(payload) {
   return {
     type: CREATE_INVOICE,
+    payload,
+  };
+}
+
+export function updateInvoiceSuccess(payload) {
+  return {
+    type: UPDATE_INVOICE,
     payload,
   };
 }

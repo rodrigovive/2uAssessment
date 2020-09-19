@@ -1,22 +1,13 @@
-import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import CloudDoneIcon from "@material-ui/icons/CloudDone";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import TableMaterial from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "../TableRow";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import EnhancedTableHead from "../TableHead";
 import EnhancedTableToolbar from "../TableToolbar";
-import { fade } from "@material-ui/core/styles/colorManipulator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,12 +22,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Table = ({ headCells = [], rows = [], handleClickIcon }) => {
+const Table = ({
+  headCells = [],
+  rows = [],
+  handleClickIcon,
+  selectedIds = [],
+}) => {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState({});
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const [selected, setSelected] = useState({});
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  useEffect(() => {
+    const selectedIdsObject = selectedIds.reduce((acc, id) => {
+      acc[id] = true;
+      return acc;
+    }, {});
+    setSelected(selectedIdsObject);
+  }, [selectedIds]);
   const handleClickRow = (id) => {
     setSelected((prev) => ({
       ...prev,
@@ -65,7 +67,10 @@ const Table = ({ headCells = [], rows = [], handleClickIcon }) => {
   const handleClickIconRow = (id) => (e) => {
     setSelected({ [id]: true });
     e.stopPropagation();
-    handleClickIcon();
+    handleClickIcon([id]);
+  };
+  const handleClickIconHead = () => {
+    handleClickIcon(Object.keys(selected));
   };
 
   return (
@@ -74,7 +79,7 @@ const Table = ({ headCells = [], rows = [], handleClickIcon }) => {
         <EnhancedTableToolbar
           title="List invoices"
           itemNumSelected={countSelected.length}
-          handleClickIcon={handleClickIcon}
+          handleClickIcon={handleClickIconHead}
         />
         <TableContainer>
           <TableMaterial

@@ -2,12 +2,9 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import CloudDoneIcon from "@material-ui/icons/CloudDone";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRowMaterial from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 
@@ -38,6 +35,7 @@ const TableRow = ({
   const classes = useStyles();
   const labelId = `enhanced-table-checkbox-${id}`;
 
+  // TODO FIX Warning
   return (
     <TableRowMaterial
       hover

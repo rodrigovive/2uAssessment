@@ -2,6 +2,7 @@ import {
   LIST_INVOICES,
   CREATE_INVOICE_ERROR,
   CREATE_INVOICE,
+  UPDATE_INVOICE,
   FETCH_INVOICES,
 } from "../actions/types";
 
@@ -10,6 +11,9 @@ const initialState = {
   isLoading: false,
   isError: null,
 };
+
+const filterApproved = (data = []) =>
+  data.filter((invoice) => invoice?.status?.toLowerCase() !== "approved");
 
 const invoiceReducer = (state, action) => {
   if (typeof state === "undefined") {
@@ -22,6 +26,26 @@ const invoiceReducer = (state, action) => {
         ...state,
         data: [...state.data, action.payload],
       };
+    case UPDATE_INVOICE:
+      const updatedInvoice = action.payload;
+      let newInvoice = true;
+      const invoicesCurrent = [
+        ...state.data?.map((invoice) => {
+          if (invoice.id === updatedInvoice?.id) {
+            newInvoice = false;
+            return updatedInvoice;
+          }
+          return invoice;
+        }),
+      ];
+      if (newInvoice) {
+        invoicesCurrent.push(updatedInvoice);
+      }
+      const invoiceInPending = filterApproved(invoicesCurrent);
+      return {
+        ...state,
+        data: invoiceInPending,
+      };
     case CREATE_INVOICE_ERROR: {
       return {
         ...state,
@@ -29,11 +53,11 @@ const invoiceReducer = (state, action) => {
       };
     }
     case LIST_INVOICES: {
-      console.log("ac", action.payload);
+      const invoiceInPending = filterApproved(action.payload);
       return {
         ...state,
         isLoading: false,
-        data: action.payload,
+        data: invoiceInPending,
       };
     }
     case FETCH_INVOICES: {

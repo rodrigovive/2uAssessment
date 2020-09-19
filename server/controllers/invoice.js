@@ -1,6 +1,36 @@
 const { v4: uuidv4 } = require("uuid");
 const Invoice = require("../models/invoice");
 
+const updateInvoice = async (req, res, next) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+    const invoice = await Invoice.findOne({ id });
+    if (!invoice) {
+      return res.status(404).json({
+        success: false,
+        error: "todo not found",
+      });
+    }
+    const updates = Object.keys(body);
+    updates.forEach((update) => (invoice[update] = body[update]));
+    await invoice.save();
+    res.locals.invoice = invoice;
+    res.status(200).json({
+      success: true,
+      data: invoice,
+    });
+    next();
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: e.message,
+    });
+  }
+};
+
 const getInvoices = async (req, res) => {
   try {
     // TODO validate data
@@ -43,13 +73,16 @@ const addInvoice = async (req, res, next) => {
       due_date,
       vendor_name,
       remittance_address,
+      status: "pending",
     });
     const invoice = await newInvoice.save();
+
     res.locals.invoice = invoice;
     // TODO should be 201 not 200
     res.status(200).json({
-      data: invoice,
-      success: true,
+      //data: invoice,
+      //success: true,
+      message: "invoice submitted successfully",
     });
     next();
   } catch (e) {
@@ -61,6 +94,10 @@ const addInvoice = async (req, res, next) => {
   }
 };
 
+const socketEmitInvoiceUpdated = (req, res) => {
+  req.io.emit("invoiceUpdated", res.locals.invoice);
+};
+
 const socketEmitInvoiceCreated = (req, res) => {
   req.io.emit("invoiceCreated", res.locals.invoice);
 };
@@ -69,4 +106,6 @@ module.exports = {
   addInvoice,
   getInvoices,
   socketEmitInvoiceCreated,
+  socketEmitInvoiceUpdated,
+  updateInvoice,
 };

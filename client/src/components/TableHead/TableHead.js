@@ -3,31 +3,21 @@ import PropTypes from "prop-types";
 import TableCell from "@material-ui/core/TableCell";
 import TableHeadMaterial from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 
-const headCells = [
-  {
-    id: "name",
-    label: "Dessert (100g serving)",
-  },
-  { id: "calories", numeric: true, label: "Calories" },
-  { id: "fat", numeric: true, label: "Fat (g)" },
-  { id: "carbs", numeric: true, label: "Carbs (g)" },
-  { id: "protein", numeric: true, label: "Protein (g)" },
-];
-
 const TableHead = ({ handleClickSelectAll, numSelected, rowCount, cells }) => {
+  const isCheckedAll = rowCount > 0 && numSelected === rowCount;
+  const isIndeterminate = numSelected > 0 && numSelected < rowCount;
   return (
     <TableHeadMaterial>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
+            indeterminate={isIndeterminate}
+            checked={isCheckedAll}
             onChange={handleClickSelectAll}
-            inputProps={{ "aria-label": "select all desserts" }}
+            inputProps={{ "aria-label": "select all invoices" }}
           />
         </TableCell>
         {cells.map((headCell) => (
@@ -44,7 +34,7 @@ TableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 TableHead.defaultProps = {
-  cells: headCells,
+  cells: [],
 };
 
 export default TableHead;

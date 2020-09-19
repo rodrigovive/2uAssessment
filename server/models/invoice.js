@@ -13,6 +13,8 @@ const Schema = mongoose.Schema;
 }
  *
  */
+// TODO validation hooks mongoose
+// TODO improve schema
 const invoiceSchema = new Schema(
   {
     id: {
@@ -39,6 +41,9 @@ const invoiceSchema = new Schema(
       type: String,
     },
     total: {
+      type: String,
+    },
+    status: {
       type: String,
     },
   },

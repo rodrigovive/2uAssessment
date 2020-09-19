@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Container } from "@material-ui/core";
+import { Container, Box, Typography, Button } from "@material-ui/core";
 import Table from "../components/Table";
 import DialogConfirm from "../components/DialogConfirm";
 import { useSelector, useDispatch } from "react-redux";
-import { getInvoices } from "../actions/invoice";
+import { getInvoices, updateInvoice } from "../actions/invoice";
 
 const getRows = (data = []) =>
   data.map((item) => ({
@@ -18,6 +18,7 @@ const getRows = (data = []) =>
 
 const Home = () => {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+  const [invoicesId, setInvoicedIds] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getInvoices());
@@ -26,21 +27,33 @@ const Home = () => {
   const invoices = useSelector((state) => {
     return state.invoice.data;
   });
+  // TODO ui for loading or SSR
   const isLoading = useSelector((state) => {
     return state.invoice.isLoading;
   });
-  console.log("invoices", invoices);
-  console.log("isLoading", isLoading);
 
   const handleConfirmDialog = () => {
-    setIsOpenDialog(true);
+    dispatch(updateInvoice(invoicesId));
+    setIsOpenDialog(false);
+    setInvoicedIds([]);
   };
-  const handleClickIcon = () => {
+  const handleClickIcon = (ids = []) => {
+    setInvoicedIds(ids);
+
     setIsOpenDialog(true);
   };
   return (
     <Container fixed>
+      <Box mt={3} mb={2}>
+        <Typography variant="h3">Invoices</Typography>
+      </Box>
+      <Box my={2}>
+        <Button variant="contained" color="primary">
+          Create invoice
+        </Button>
+      </Box>
       <Table
+        selectedIds={invoicesId}
         handleClickIcon={handleClickIcon}
         headCells={[
           { id: "invoiceNumber", label: "Invoice Number" },
@@ -63,6 +76,10 @@ const Home = () => {
           {
             id: "dueDate",
             label: "Due Date",
+          },
+          {
+            id: "icon",
+            label: "",
           },
         ]}
         rows={getRows(invoices)}
