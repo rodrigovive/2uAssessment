@@ -20,12 +20,18 @@ export function getInvoices() {
         type: FETCH_INVOICES,
       });
       const response = await (await fetch(`${API_URL}/api/invoice`)).json();
-      console.log("response", response);
       if (response.success) {
         dispatch(listInvoicesSuccess(response.data));
       }
     } catch (error) {
       console.log("error", error.message);
     }
+  };
+}
+
+export function createInvoiceSuccess(payload) {
+  return {
+    type: CREATE_INVOICE,
+    payload,
   };
 }
