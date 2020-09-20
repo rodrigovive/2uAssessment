@@ -33,7 +33,7 @@ const Table = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   useEffect(() => {
-    const selectedIdsObject = selectedIds.reduce((acc, id) => {
+    const selectedIdsObject = selectedIds.reduce((acc, { id }) => {
       acc[id] = true;
       return acc;
     }, {});

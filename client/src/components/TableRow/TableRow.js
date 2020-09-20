@@ -35,7 +35,6 @@ const TableRow = ({
   const classes = useStyles();
   const labelId = `enhanced-table-checkbox-${id}`;
 
-  // TODO FIX Warning
   return (
     <TableRowMaterial
       hover
