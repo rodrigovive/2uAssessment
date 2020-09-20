@@ -20,10 +20,10 @@ app.use(function (req, _, next) {
 });
 app.use("/api", routerApi);
 
-app.use(express.static(clientPath));
+app.use(express.static(config.CLIENT_PATH));
 
 app.get("*", (_, res) => {
-  res.sendFile(clientPath + "/index.html");
+  res.sendFile(config.CLIENT_PATH + "/index.html");
 });
 
 server.listen(config.PORT, () => {
