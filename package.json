@@ -1,0 +1,22 @@
+{
+  "name": "2uAssessment",
+  "version": "1.0.0",
+  "description": "The business analyst assigned to your sprint team has presented you with two user stories to complete this sprint. This assessment asks you to complete these story cards to the best of your ability.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-prebuild": "cd server && npm install",
+    "heroku-postbuild": "cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigovive/2uAssessment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rodrigovive/2uAssessment/issues"
+  },
+  "homepage": "https://github.com/rodrigovive/2uAssessment#readme"
+}

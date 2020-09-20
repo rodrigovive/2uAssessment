@@ -20,6 +20,12 @@ app.use(function (req, _, next) {
 });
 app.use("/api", routerApi);
 
+app.use(express.static(clientPath));
+
+app.get("*", (_, res) => {
+  res.sendFile(clientPath + "/index.html");
+});
+
 server.listen(config.PORT, () => {
   console.log(`Server is running is ${config.PORT} ${process.env.NODE_ENV}`);
 });
