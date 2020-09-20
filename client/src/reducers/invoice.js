@@ -1,5 +1,7 @@
 import {
   LIST_INVOICES,
+  APPROVE_REQUEST,
+  APPROVE_SUCCESS,
   CREATE_INVOICE_ERROR,
   CREATE_INVOICE,
   UPDATE_INVOICE,
@@ -10,6 +12,7 @@ const initialState = {
   data: [],
   isLoading: false,
   isError: null,
+  isLoadingApprove: false,
 };
 
 const filterApproved = (data = []) =>
@@ -21,6 +24,18 @@ const invoiceReducer = (state, action) => {
   }
 
   switch (action.type) {
+    case APPROVE_REQUEST: {
+      return {
+        ...state,
+        isLoadingApprove: true,
+      };
+    }
+    case APPROVE_SUCCESS: {
+      return {
+        ...state,
+        isLoadingApprove: true,
+      };
+    }
     case CREATE_INVOICE:
       return {
         ...state,

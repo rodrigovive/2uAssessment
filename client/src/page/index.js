@@ -3,6 +3,8 @@ import { Container, Box, Typography, Button } from "@material-ui/core";
 import Table from "../components/Table";
 import DialogConfirm from "../components/DialogConfirm";
 import { useSelector, useDispatch } from "react-redux";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 import { getInvoices, updateInvoice } from "../actions/invoice";
 
 const getRows = (data = []) =>
@@ -16,9 +18,16 @@ const getRows = (data = []) =>
     dueDate: item.due_date,
   }));
 
+const getInvoicesSelected = (invoices, invoicesId) => {
+  return invoicesId.map((id) => {
+    const [invoice = {}] = invoices.filter((invoice) => invoice.id === id);
+    return invoice;
+  });
+};
+
 const Home = () => {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const [invoicesId, setInvoicedIds] = useState([]);
+  const [invoicesSelected, setInvocesSelected] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getInvoices());
@@ -32,14 +41,18 @@ const Home = () => {
     return state.invoice.isLoading;
   });
 
+  const isLoadingApprove = useSelector((state) => {
+    return state.invoice.isLoadingApprove;
+  });
+
   const handleConfirmDialog = () => {
-    dispatch(updateInvoice(invoicesId));
-    setIsOpenDialog(false);
-    setInvoicedIds([]);
+    dispatch(updateInvoice(invoicesSelected.map(({ id }) => id))).then(() => {
+      setIsOpenDialog(false);
+      setInvocesSelected([]);
+    });
   };
   const handleClickIcon = (ids = []) => {
-    setInvoicedIds(ids);
-
+    setInvocesSelected(getInvoicesSelected(invoices, ids));
     setIsOpenDialog(true);
   };
   return (
@@ -47,13 +60,8 @@ const Home = () => {
       <Box mt={3} mb={2}>
         <Typography variant="h3">Invoices</Typography>
       </Box>
-      <Box my={2}>
-        <Button variant="contained" color="primary">
-          Create invoice
-        </Button>
-      </Box>
       <Table
-        selectedIds={invoicesId}
+        selectedIds={invoicesSelected}
         handleClickIcon={handleClickIcon}
         headCells={[
           { id: "invoiceNumber", label: "Invoice Number" },
@@ -85,7 +93,13 @@ const Home = () => {
         rows={getRows(invoices)}
       />
       <DialogConfirm
-        title="Approve invoices?"
+        isLoading={isLoadingApprove}
+        title={`Do you approve the invoices?`}
+        description={invoicesSelected.map(({ id, invoice_number }) => (
+          <ListItem key={id}>
+            <ListItemText primary={`# ${invoice_number}`} />
+          </ListItem>
+        ))}
         handleConfirm={handleConfirmDialog}
         isOpen={isOpenDialog}
         handleClose={() => setIsOpenDialog(false)}

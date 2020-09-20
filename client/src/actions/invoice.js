@@ -3,6 +3,8 @@ import {
   LIST_INVOICES,
   UPDATE_INVOICE,
   CREATE_INVOICE,
+  APPROVE_REQUEST,
+  APPROVE_SUCCESS,
 } from "./types";
 import { API_URL } from "../config/env";
 
@@ -17,11 +19,11 @@ export function updateInvoice(invoiceIds = []) {
   return async function (dispatch) {
     try {
       dispatch({
-        type: FETCH_INVOICES,
+        type: APPROVE_REQUEST,
       });
       await Promise.all(
         invoiceIds.map(async (id) => {
-          const response = await (
+          await (
             await fetch(`${API_URL}/api/invoice/${id}`, {
               method: "PATCH",
               body: JSON.stringify({
@@ -32,9 +34,11 @@ export function updateInvoice(invoiceIds = []) {
               },
             })
           ).json();
-          console.log("response", response);
         })
       );
+      dispatch({
+        type: APPROVE_SUCCESS,
+      });
     } catch (error) {
       console.log("error", error.message);
     }

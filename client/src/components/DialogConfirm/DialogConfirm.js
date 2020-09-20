@@ -6,40 +6,56 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    position: "relative",
+    overflow: "auto",
+    maxHeight: 300,
+  },
+  action: {
+    justifyContent: "center",
+    display: "flex",
+  },
+}));
+
 const AlertDialogSlide = ({
   isOpen,
+  isLoading,
   handleClose,
   description,
   title,
   handleConfirm,
 }) => {
+  const classes = useStyles();
   const dialogTitle = title && (
     <DialogTitle id="alert-dialog-slide-title">{title}</DialogTitle>
   );
   const dialogDescription = description && (
-    <DialogContent>
-      <DialogContentText id="alert-dialog-slide-description">
-        {description}
-      </DialogContentText>
-    </DialogContent>
+    <DialogContent className={classes.root}>{description}</DialogContent>
   );
-  const buttonClose = handleClose && (
+  const buttonClose = !isLoading && (
     <Button onClick={handleClose} color="primary">
       Cancel
     </Button>
   );
-  const buttonConfirm = handleConfirm && (
+  const buttonConfirm = !isLoading && (
     <Button onClick={handleConfirm} color="primary">
       Confirm
     </Button>
   );
+  const loading = isLoading && <CircularProgress />;
   return (
     <Dialog
+      disableBackdropClick={isLoading}
+      disableEscapeKeyDown={isLoading}
       open={isOpen}
       TransitionComponent={Transition}
       keepMounted
@@ -49,7 +65,12 @@ const AlertDialogSlide = ({
     >
       {dialogTitle}
       {dialogDescription}
-      <DialogActions>
+      <DialogActions
+        classes={{
+          root: classes.action,
+        }}
+      >
+        {loading}
         {buttonClose}
         {buttonConfirm}
       </DialogActions>
